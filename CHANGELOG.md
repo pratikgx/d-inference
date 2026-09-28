@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — cache routing state persistence
+
+- Keep the exact prefix-cache holder index and the observed-demand index across coordinator restarts. The registry writes SSD-tier holders and demand keys behind its in-memory index to the store in 5-second batches (two new Postgres tables, mirrored on the memory store), reloads them at boot, and binds restored holders to a provider the moment it applies capabilities with the same cache epoch, model, artifact and contract; a disconnect parks a holder instead of deleting it. `EIGENINFERENCE_CACHE_ROUTING_PERSIST=false` restores the old empty-index-after-restart behaviour. `GET /v1/cache/status` gains `lifecycle.persistence` with restored, parked, bound and flush counters.
+
 ## Unreleased — coordinator first-content routing
 
 - Rank eligible providers by cache-adjusted first-content forecasts by default, prefer credible deadline-feasible choices, and spread near-equal choices by whole-machine service work within a 100-ms band. Preserve physical prompt/output reservations and explicit owner routing.
